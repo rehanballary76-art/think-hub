@@ -14,7 +14,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/forum" element={<Forum />} />
-        <Route path="/discussion" element={<Discussion />} />
+        <Route path="/discussion/:id" element={<Discussion />} />
       </Routes>
     </BrowserRouter>
   )

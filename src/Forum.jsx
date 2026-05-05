@@ -1,11 +1,48 @@
 import './index.css'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
+import { useState, useEffect } from 'react'
+import { db, auth } from './firebase'
+import { collection, addDoc, getDocs, orderBy, query } from 'firebase/firestore'
 
 function Forum() {
+  const [posts, setPosts] = useState([])
+  const [title, setTitle] = useState('')
+  const [category, setCategory] = useState('Web Development')
+  const [showForm, setShowForm] = useState(false)
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    fetchPosts()
+  }, [])
+
+  const fetchPosts = async () => {
+    const q = query(collection(db, 'posts'), orderBy('date', 'desc'))
+    const snapshot = await getDocs(q)
+    const postList = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }))
+    setPosts(postList)
+  }
+
+  const handleNewPost = async () => {
+    if (!auth.currentUser) {
+      navigate('/login')
+      return
+    }
+    if (!title) return
+    await addDoc(collection(db, 'posts'), {
+      title: title,
+      category: category,
+      author: auth.currentUser.email,
+      likes: 0,
+      replies: 0,
+      date: new Date()
+    })
+    setTitle('')
+    setShowForm(false)
+    fetchPosts()
+  }
+
   return (
     <div>
-
-      {/* NAVBAR */}
       <nav>
         <h1>Think Hub</h1>
         <ul>
@@ -16,101 +53,56 @@ function Forum() {
         </ul>
       </nav>
 
-      {/* FORUM HEADER */}
       <div className="forum-header">
         <h2>💬 All Discussions</h2>
         <p>Browse and join conversations on any topic!</p>
-        <button className="form-btn new-post-btn">+ New Post</button>
+        <button className="form-btn new-post-btn"
+          onClick={() => setShowForm(!showForm)}>
+          + New Post
+        </button>
       </div>
 
-      {/* DISCUSSION LIST */}
+      {showForm && (
+        <div className="new-post-form">
+          <input type="text" placeholder="Enter your question title..."
+            value={title} onChange={(e) => setTitle(e.target.value)} />
+          <select value={category} onChange={(e) => setCategory(e.target.value)}>
+            <option>Web Development</option>
+            <option>Artificial Intelligence</option>
+            <option>Mobile Development</option>
+            <option>Cyber Security</option>
+            <option>Game Development</option>
+            <option>Cloud Computing</option>
+          </select>
+          <button className="form-btn" onClick={handleNewPost}>Post Question</button>
+        </div>
+      )}
+
       <div className="discussion-container">
-
-        <Link to="/discussion" className="discussion-link">
-          <div className="discussion-item">
-            <div className="discussion-info">
-              <h3>How to learn React in 30 days? 🚀</h3>
-              <p>Posted by <span className="author">Rehan</span> · Web Development</p>
+        {posts.length === 0 && (
+          <p style={{textAlign:'center', padding:'40px', color:'#666'}}>
+            No posts yet! Be the first to post! 🚀
+          </p>
+        )}
+        {posts.map(post => (
+          <Link to={`/discussion/${post.id}`} className="discussion-link" key={post.id}>
+            <div className="discussion-item">
+              <div className="discussion-info">
+                <h3>{post.title}</h3>
+                <p>Posted by <span className="author">{post.author}</span> · {post.category}</p>
+              </div>
+              <div className="discussion-stats">
+                <span>👍 {post.likes} Likes</span>
+                <span>💬 {post.replies} Replies</span>
+              </div>
             </div>
-            <div className="discussion-stats">
-              <span>👍 24 Likes</span>
-              <span>💬 12 Replies</span>
-            </div>
-          </div>
-        </Link>
-
-        <Link to="/discussion" className="discussion-link">
-          <div className="discussion-item">
-            <div className="discussion-info">
-              <h3>Best AI tools for students in 2024 🤖</h3>
-              <p>Posted by <span className="author">Ahmed</span> · Artificial Intelligence</p>
-            </div>
-            <div className="discussion-stats">
-              <span>👍 45 Likes</span>
-              <span>💬 28 Replies</span>
-            </div>
-          </div>
-        </Link>
-
-        <Link to="/discussion" className="discussion-link">
-          <div className="discussion-item">
-            <div className="discussion-info">
-              <h3>How to build a mobile app from scratch? 📱</h3>
-              <p>Posted by <span className="author">Sara</span> · Mobile Development</p>
-            </div>
-            <div className="discussion-stats">
-              <span>👍 33 Likes</span>
-              <span>💬 19 Replies</span>
-            </div>
-          </div>
-        </Link>
-
-        <Link to="/discussion" className="discussion-link">
-          <div className="discussion-item">
-            <div className="discussion-info">
-              <h3>Top 10 Cyber Security tips for beginners 🔒</h3>
-              <p>Posted by <span className="author">Ali</span> · Cyber Security</p>
-            </div>
-            <div className="discussion-stats">
-              <span>👍 56 Likes</span>
-              <span>💬 34 Replies</span>
-            </div>
-          </div>
-        </Link>
-
-        <Link to="/discussion" className="discussion-link">
-          <div className="discussion-item">
-            <div className="discussion-info">
-              <h3>How to get started with Cloud Computing? ☁️</h3>
-              <p>Posted by <span className="author">Zara</span> · Cloud Computing</p>
-            </div>
-            <div className="discussion-stats">
-              <span>👍 41 Likes</span>
-              <span>💬 22 Replies</span>
-            </div>
-          </div>
-        </Link>
-
-        <Link to="/discussion" className="discussion-link">
-          <div className="discussion-item">
-            <div className="discussion-info">
-              <h3>Unity vs Unreal Engine — which is better? 🎮</h3>
-              <p>Posted by <span className="author">Hassan</span> · Game Development</p>
-            </div>
-            <div className="discussion-stats">
-              <span>👍 38 Likes</span>
-              <span>💬 25 Replies</span>
-            </div>
-          </div>
-        </Link>
-
+          </Link>
+        ))}
       </div>
 
-      {/* FOOTER */}
       <footer>
         <p>© 2024 Think Hub. All rights reserved.</p>
       </footer>
-
     </div>
   )
 }
