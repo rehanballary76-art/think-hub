@@ -9,7 +9,6 @@ function Home({ user }) {
   const navigate = useNavigate()
   const [stats, setStats] = useState({ posts: 0, users: 0 })
   const [popular, setPopular] = useState([])
-  const [dark, setDark] = useState(false)
 
   useEffect(() => {
     fetchStats()
@@ -37,7 +36,7 @@ function Home({ user }) {
   }
 
   return (
-    <div className={dark ? 'dark-mode' : ''}>
+    <div>
 
       <nav>
         <h1>Think Hub</h1>
@@ -55,11 +54,6 @@ function Home({ user }) {
               <li><Link to="/register">Register</Link></li>
             </>
           )}
-          <li>
-            <button className="dark-toggle" onClick={() => setDark(!dark)}>
-              {dark ? '☀️' : '🌙'}
-            </button>
-          </li>
         </ul>
       </nav>
 
