@@ -2,9 +2,10 @@ import './index.css'
 import { Link, useNavigate } from 'react-router-dom'
 import { useState, useEffect } from 'react'
 import { db, auth } from './firebase'
+import { signOut } from 'firebase/auth'
 import { collection, addDoc, getDocs, orderBy, query } from 'firebase/firestore'
 
-function Forum() {
+function Forum({ user }) {
   const [posts, setPosts] = useState([])
   const [filtered, setFiltered] = useState([])
   const [title, setTitle] = useState('')
@@ -55,6 +56,11 @@ function Forum() {
     fetchPosts()
   }
 
+  const handleLogout = async () => {
+    await signOut(auth)
+    navigate('/')
+  }
+
   return (
     <div>
       <nav>
@@ -62,8 +68,17 @@ function Forum() {
         <ul>
           <li><Link to="/">Home</Link></li>
           <li><Link to="/forum">Forums</Link></li>
-          <li><Link to="/login">Login</Link></li>
-          <li><Link to="/register">Register</Link></li>
+          {user ? (
+            <>
+              <li><Link to="/profile">👤 {user.email.split('@')[0]}</Link></li>
+              <li><a href="#" onClick={handleLogout}>Logout</a></li>
+            </>
+          ) : (
+            <>
+              <li><Link to="/login">Login</Link></li>
+              <li><Link to="/register">Register</Link></li>
+            </>
+          )}
         </ul>
       </nav>
 
@@ -76,7 +91,6 @@ function Forum() {
         </button>
       </div>
 
-      {/* SEARCH BAR */}
       <div className="search-container">
         <input
           type="text"

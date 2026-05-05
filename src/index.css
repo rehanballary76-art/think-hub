@@ -590,3 +590,74 @@ footer {
   border-color: #e94560;
   box-shadow: 0 4px 20px rgba(233,69,96,0.15);
 }
+/* PROFILE PAGE */
+.profile-header {
+  background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460);
+  color: white;
+  text-align: center;
+  padding: 60px 20px;
+}
+
+.profile-avatar {
+  width: 100px;
+  height: 100px;
+  background: linear-gradient(135deg, #e94560, #c73652);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 42px;
+  font-weight: 700;
+  margin: 0 auto 20px auto;
+  box-shadow: 0 8px 25px rgba(233,69,96,0.4);
+}
+
+.profile-header h2 {
+  font-size: 30px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.profile-header p {
+  color: #aaa;
+  font-size: 16px;
+  margin-bottom: 20px;
+}
+
+.logout-btn {
+  width: auto;
+  padding: 10px 30px;
+  font-size: 14px;
+}
+
+.my-posts-title {
+  font-size: 24px;
+  color: #1a1a2e;
+  font-weight: 700;
+  margin-bottom: 20px;
+}
+
+.my-post-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.delete-btn {
+  background: linear-gradient(135deg, #e94560, #c73652);
+  color: white;
+  border: none;
+  padding: 8px 18px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+.delete-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(233,69,96,0.4);
+}

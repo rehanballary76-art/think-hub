@@ -1,14 +1,16 @@
 import './index.css'
-import { Link, useParams } from 'react-router-dom'
+import { Link, useParams, useNavigate } from 'react-router-dom'
 import { useState, useEffect } from 'react'
 import { db, auth } from './firebase'
+import { signOut } from 'firebase/auth'
 import { doc, getDoc, collection, addDoc, getDocs, orderBy, query, updateDoc, increment } from 'firebase/firestore'
 
-function Discussion() {
+function Discussion({ user }) {
   const { id } = useParams()
   const [post, setPost] = useState(null)
   const [replies, setReplies] = useState([])
   const [reply, setReply] = useState('')
+  const navigate = useNavigate()
 
   useEffect(() => {
     fetchPost()
@@ -30,7 +32,10 @@ function Discussion() {
   }
 
   const handleReply = async () => {
-    if (!auth.currentUser) return
+    if (!auth.currentUser) {
+      navigate('/login')
+      return
+    }
     if (!reply) return
     await addDoc(collection(db, 'posts', id, 'replies'), {
       content: reply,
@@ -51,6 +56,11 @@ function Discussion() {
     fetchPost()
   }
 
+  const handleLogout = async () => {
+    await signOut(auth)
+    navigate('/')
+  }
+
   return (
     <div>
       <nav>
@@ -58,8 +68,17 @@ function Discussion() {
         <ul>
           <li><Link to="/">Home</Link></li>
           <li><Link to="/forum">Forums</Link></li>
-          <li><Link to="/login">Login</Link></li>
-          <li><Link to="/register">Register</Link></li>
+          {user ? (
+            <>
+              <li><Link to="/profile">👤 {user.email.split('@')[0]}</Link></li>
+              <li><a href="#" onClick={handleLogout}>Logout</a></li>
+            </>
+          ) : (
+            <>
+              <li><Link to="/login">Login</Link></li>
+              <li><Link to="/register">Register</Link></li>
+            </>
+          )}
         </ul>
       </nav>
 
@@ -89,7 +108,9 @@ function Discussion() {
 
         {replies.map((r, index) => (
           <div className="main-post reply" key={index}>
-            <div className="post-avatar blue">A</div>
+            <div className="post-avatar blue">
+              {r.author[0].toUpperCase()}
+            </div>
             <div className="post-content">
               <h4>{r.author}</h4>
               <p>{r.content}</p>

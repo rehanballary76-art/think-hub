@@ -1,7 +1,17 @@
 import './index.css'
 import { Link } from 'react-router-dom'
+import { auth } from './firebase'
+import { signOut } from 'firebase/auth'
+import { useNavigate } from 'react-router-dom'
 
-function Home() {
+function Home({ user }) {
+  const navigate = useNavigate()
+
+  const handleLogout = async () => {
+    await signOut(auth)
+    navigate('/')
+  }
+
   return (
     <div>
 
@@ -10,8 +20,17 @@ function Home() {
         <ul>
           <li><Link to="/">Home</Link></li>
           <li><Link to="/forum">Forums</Link></li>
-          <li><Link to="/login">Login</Link></li>
-          <li><Link to="/register">Register</Link></li>
+          {user ? (
+            <>
+              <li><Link to="/profile">👤 {user.email.split('@')[0]}</Link></li>
+              <li><a href="#" onClick={handleLogout}>Logout</a></li>
+            </>
+          ) : (
+            <>
+              <li><Link to="/login">Login</Link></li>
+              <li><Link to="/register">Register</Link></li>
+            </>
+          )}
         </ul>
       </nav>
 
