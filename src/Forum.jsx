@@ -6,20 +6,34 @@ import { collection, addDoc, getDocs, orderBy, query } from 'firebase/firestore'
 
 function Forum() {
   const [posts, setPosts] = useState([])
+  const [filtered, setFiltered] = useState([])
   const [title, setTitle] = useState('')
   const [category, setCategory] = useState('Web Development')
   const [showForm, setShowForm] = useState(false)
+  const [search, setSearch] = useState('')
   const navigate = useNavigate()
 
   useEffect(() => {
     fetchPosts()
   }, [])
 
+  useEffect(() => {
+    if (search === '') {
+      setFiltered(posts)
+    } else {
+      setFiltered(posts.filter(p =>
+        p.title.toLowerCase().includes(search.toLowerCase()) ||
+        p.category.toLowerCase().includes(search.toLowerCase())
+      ))
+    }
+  }, [search, posts])
+
   const fetchPosts = async () => {
     const q = query(collection(db, 'posts'), orderBy('date', 'desc'))
     const snapshot = await getDocs(q)
     const postList = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }))
     setPosts(postList)
+    setFiltered(postList)
   }
 
   const handleNewPost = async () => {
@@ -62,6 +76,17 @@ function Forum() {
         </button>
       </div>
 
+      {/* SEARCH BAR */}
+      <div className="search-container">
+        <input
+          type="text"
+          placeholder="🔍 Search discussions..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className="search-bar"
+        />
+      </div>
+
       {showForm && (
         <div className="new-post-form">
           <input type="text" placeholder="Enter your question title..."
@@ -79,12 +104,12 @@ function Forum() {
       )}
 
       <div className="discussion-container">
-        {posts.length === 0 && (
-          <p style={{textAlign:'center', padding:'40px', color:'#666'}}>
-            No posts yet! Be the first to post! 🚀
+        {filtered.length === 0 && (
+          <p style={{textAlign:'center', padding:'40px', color:'#888'}}>
+            No posts found! 🔍
           </p>
         )}
-        {posts.map(post => (
+        {filtered.map(post => (
           <Link to={`/discussion/${post.id}`} className="discussion-link" key={post.id}>
             <div className="discussion-item">
               <div className="discussion-info">
