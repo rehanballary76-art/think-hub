@@ -1,11 +1,35 @@
 import './index.css'
-import { Link } from 'react-router-dom'
-import { auth } from './firebase'
+import { Link, useNavigate } from 'react-router-dom'
+import { useState, useEffect } from 'react'
+import { auth, db } from './firebase'
 import { signOut } from 'firebase/auth'
-import { useNavigate } from 'react-router-dom'
+import { collection, getDocs, orderBy, query, limit } from 'firebase/firestore'
 
 function Home({ user }) {
   const navigate = useNavigate()
+  const [stats, setStats] = useState({ posts: 0, users: 0 })
+  const [popular, setPopular] = useState([])
+  const [dark, setDark] = useState(false)
+
+  useEffect(() => {
+    fetchStats()
+    fetchPopular()
+  }, [])
+
+  const fetchStats = async () => {
+    const postsSnap = await getDocs(collection(db, 'posts'))
+    const usersSnap = await getDocs(collection(db, 'users'))
+    setStats({
+      posts: postsSnap.size,
+      users: usersSnap.size
+    })
+  }
+
+  const fetchPopular = async () => {
+    const q = query(collection(db, 'posts'), orderBy('likes', 'desc'), limit(3))
+    const snapshot = await getDocs(q)
+    setPopular(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })))
+  }
 
   const handleLogout = async () => {
     await signOut(auth)
@@ -13,7 +37,7 @@ function Home({ user }) {
   }
 
   return (
-    <div>
+    <div className={dark ? 'dark-mode' : ''}>
 
       <nav>
         <h1>Think Hub</h1>
@@ -31,6 +55,11 @@ function Home({ user }) {
               <li><Link to="/register">Register</Link></li>
             </>
           )}
+          <li>
+            <button className="dark-toggle" onClick={() => setDark(!dark)}>
+              {dark ? '☀️' : '🌙'}
+            </button>
+          </li>
         </ul>
       </nav>
 
@@ -40,6 +69,44 @@ function Home({ user }) {
         <Link to="/register"><button>Get Started</button></Link>
       </div>
 
+      {/* STATS SECTION */}
+      <div className="stats-container">
+        <div className="stat-card">
+          <h3>📝 {stats.posts}</h3>
+          <p>Total Posts</p>
+        </div>
+        <div className="stat-card">
+          <h3>👥 {stats.users}</h3>
+          <p>Total Users</p>
+        </div>
+        <div className="stat-card">
+          <h3>🌐 1</h3>
+          <p>Active Community</p>
+        </div>
+      </div>
+
+      {/* POPULAR POSTS */}
+      {popular.length > 0 && (
+        <div className="popular-section">
+          <h2>🏆 Most Popular Posts</h2>
+          {popular.map(post => (
+            <Link to={`/discussion/${post.id}`} className="discussion-link" key={post.id}>
+              <div className="discussion-item">
+                <div className="discussion-info">
+                  <h3>{post.title}</h3>
+                  <p>Posted by <span className="author">{post.author}</span> · {post.category}</p>
+                </div>
+                <div className="discussion-stats">
+                  <span>👍 {post.likes} Likes</span>
+                  <span>💬 {post.replies} Replies</span>
+                </div>
+              </div>
+            </Link>
+          ))}
+        </div>
+      )}
+
+      {/* FORUM CARDS */}
       <div className="forums">
         <h2>Popular Discussion Topics</h2>
         <div className="forum-grid">
