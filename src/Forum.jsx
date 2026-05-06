@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { useState, useEffect } from 'react'
 import { db, auth } from './firebase'
 import { signOut } from 'firebase/auth'
-import { collection, addDoc, getDocs, orderBy, query, updateDoc, doc, increment } from 'firebase/firestore'
+import { collection, addDoc, getDocs, orderBy, query, updateDoc, doc, increment, getDoc, setDoc } from 'firebase/firestore'
 
 function Forum({ user }) {
   const [posts, setPosts] = useState([])
@@ -72,10 +72,22 @@ function Forum({ user }) {
   }
 
   const handleLike = async (postId) => {
+    if (!auth.currentUser) {
+      navigate('/login')
+      return
+    }
+    const likeRef = doc(db, 'posts', postId, 'likedBy', auth.currentUser.uid)
+    const likeSnap = await getDoc(likeRef)
+    if (likeSnap.exists()) {
+      alert('You already liked this post! 😊')
+      return
+    }
+    await setDoc(likeRef, { liked: true })
     await updateDoc(doc(db, 'posts', postId), {
       likes: increment(1)
     })
     fetchPosts()
+  }
   }
 
   const handleLogout = async () => {

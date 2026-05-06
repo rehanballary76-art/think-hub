@@ -9,6 +9,7 @@ function Home({ user }) {
   const navigate = useNavigate()
   const [stats, setStats] = useState({ posts: 0, users: 0 })
   const [popular, setPopular] = useState([])
+  const [dark, setDark] = useState(false)
 
   useEffect(() => {
     fetchStats()
@@ -36,7 +37,7 @@ function Home({ user }) {
   }
 
   return (
-    <div>
+    <div className={dark ? 'dark-mode' : ''}>
 
       <nav>
         <h1>Think Hub</h1>
@@ -54,6 +55,11 @@ function Home({ user }) {
               <li><Link to="/register">Register</Link></li>
             </>
           )}
+          <li>
+            <button className="dark-toggle" onClick={() => setDark(!dark)}>
+              {dark ? '☀️' : '🌙'}
+            </button>
+          </li>
         </ul>
       </nav>
 
@@ -102,54 +108,78 @@ function Home({ user }) {
 
       {/* FORUM CARDS */}
       <div className="forums">
-        <h2>Popular Discussion Topics</h2>
+        <h2>Explore Knowledge Topics</h2>
         <div className="forum-grid">
 
           <Link to="/forum" className="discussion-link">
             <div className="forum-card">
-              <h3>💻 Web Development</h3>
-              <p>Discuss HTML, CSS, JavaScript, React and more!</p>
-              <span>120 Posts</span>
+              <h3>💻 Technology</h3>
+              <p>Discuss software, hardware, programming and the latest tech trends!</p>
+              <span>Technology</span>
+            </div>
+          </Link>
+
+          <Link to="/forum" className="discussion-link">
+            <div className="forum-card">
+              <h3>🔬 Science</h3>
+              <p>Explore physics, chemistry, biology and scientific discoveries!</p>
+              <span>Science</span>
+            </div>
+          </Link>
+
+          <Link to="/forum" className="discussion-link">
+            <div className="forum-card">
+              <h3>📚 Education</h3>
+              <p>Share study tips, resources and learning strategies!</p>
+              <span>Education</span>
+            </div>
+          </Link>
+
+          <Link to="/forum" className="discussion-link">
+            <div className="forum-card">
+              <h3>💼 Business</h3>
+              <p>Discuss entrepreneurship, marketing and career growth!</p>
+              <span>Business</span>
+            </div>
+          </Link>
+
+          <Link to="/forum" className="discussion-link">
+            <div className="forum-card">
+              <h3>🎨 Arts & Culture</h3>
+              <p>Share creative ideas, art, music and cultural discussions!</p>
+              <span>Arts</span>
+            </div>
+          </Link>
+
+          <Link to="/forum" className="discussion-link">
+            <div className="forum-card">
+              <h3>🏥 Health</h3>
+              <p>Discuss fitness, mental health and wellness topics!</p>
+              <span>Health</span>
+            </div>
+          </Link>
+
+          <Link to="/forum" className="discussion-link">
+            <div className="forum-card">
+              <h3>🌍 World Affairs</h3>
+              <p>Discuss global news, politics and international topics!</p>
+              <span>World</span>
             </div>
           </Link>
 
           <Link to="/forum" className="discussion-link">
             <div className="forum-card">
               <h3>🤖 Artificial Intelligence</h3>
-              <p>Talk about AI, Machine Learning and Data Science!</p>
-              <span>98 Posts</span>
+              <p>Explore AI, machine learning and the future of technology!</p>
+              <span>AI</span>
             </div>
           </Link>
 
           <Link to="/forum" className="discussion-link">
             <div className="forum-card">
-              <h3>📱 Mobile Development</h3>
-              <p>Discuss Android, iOS and React Native apps!</p>
-              <span>75 Posts</span>
-            </div>
-          </Link>
-
-          <Link to="/forum" className="discussion-link">
-            <div className="forum-card">
-              <h3>🔒 Cyber Security</h3>
-              <p>Learn and discuss about hacking and security!</p>
-              <span>60 Posts</span>
-            </div>
-          </Link>
-
-          <Link to="/forum" className="discussion-link">
-            <div className="forum-card">
-              <h3>🎮 Game Development</h3>
-              <p>Share your game projects and get feedback!</p>
-              <span>45 Posts</span>
-            </div>
-          </Link>
-
-          <Link to="/forum" className="discussion-link">
-            <div className="forum-card">
-              <h3>☁️ Cloud Computing</h3>
-              <p>Discuss AWS, Azure, Google Cloud and more!</p>
-              <span>55 Posts</span>
+              <h3>🎮 Entertainment</h3>
+              <p>Talk about games, movies, music and pop culture!</p>
+              <span>Entertainment</span>
             </div>
           </Link>
 
