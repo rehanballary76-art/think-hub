@@ -11,7 +11,7 @@ function Forum({ user }) {
   const [title, setTitle] = useState('')
   const [body, setBody] = useState('')
   const [tags, setTags] = useState('')
-  const [category, setCategory] = useState('Web Development')
+  const [category, setCategory] = useState('Technology')
   const [showForm, setShowForm] = useState(false)
   const [search, setSearch] = useState('')
   const [filter, setFilter] = useState('Popular')
@@ -87,7 +87,6 @@ function Forum({ user }) {
       likes: increment(1)
     })
     fetchPosts()
-  }
   }
 
   const handleLogout = async () => {
@@ -170,16 +169,19 @@ function Forum({ user }) {
                 value={title} onChange={(e) => setTitle(e.target.value)} />
               <textarea placeholder="Describe your question..."
                 value={body} onChange={(e) => setBody(e.target.value)}
-                rows="3" />
-              <input type="text" placeholder="Tags (comma separated e.g. react, javascript)"
+                rows="3" style={{padding:'14px 18px', border:'2px solid #eee', borderRadius:'10px', fontSize:'14px', outline:'none', fontFamily:'Poppins, sans-serif'}} />
+              <input type="text" placeholder="Tags (comma separated e.g. science, health)"
                 value={tags} onChange={(e) => setTags(e.target.value)} />
               <select value={category} onChange={(e) => setCategory(e.target.value)}>
-                <option>Web Development</option>
+                <option>Technology</option>
+                <option>Science</option>
+                <option>Education</option>
+                <option>Business</option>
+                <option>Arts & Culture</option>
+                <option>Health</option>
+                <option>World Affairs</option>
                 <option>Artificial Intelligence</option>
-                <option>Mobile Development</option>
-                <option>Cyber Security</option>
-                <option>Game Development</option>
-                <option>Cloud Computing</option>
+                <option>Entertainment</option>
               </select>
               <button className="form-btn" onClick={handleNewPost}>Post Question</button>
             </div>
@@ -212,6 +214,7 @@ function Forum({ user }) {
                 <div className="post-meta">
                   <span className="replies-count">💬 {post.replies} Answers</span>
                   <span>Posted by <span className="author">{post.author}</span></span>
+                  <span className="post-category">📁 {post.category}</span>
                 </div>
               </div>
             </div>
@@ -221,7 +224,6 @@ function Forum({ user }) {
         {/* RIGHT SIDEBAR */}
         <div className="right-sidebar">
 
-          {/* TRENDING TAGS */}
           <div className="sidebar-card">
             <h4>📈 Trending Tags</h4>
             {allTags.length === 0 && <p style={{color:'#888', fontSize:'13px'}}>No tags yet!</p>}
@@ -232,7 +234,6 @@ function Forum({ user }) {
             ))}
           </div>
 
-          {/* TOP USERS */}
           <div className="sidebar-card">
             <h4>🏆 Top Questioners</h4>
             {[...new Map(posts.map(p => [p.author, p])).values()].slice(0, 3).map((p, i) => (
