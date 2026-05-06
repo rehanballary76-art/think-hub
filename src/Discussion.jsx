@@ -3,13 +3,14 @@ import { Link, useParams, useNavigate } from 'react-router-dom'
 import { useState, useEffect } from 'react'
 import { db, auth } from './firebase'
 import { signOut } from 'firebase/auth'
-import { doc, getDoc, collection, addDoc, getDocs, orderBy, query, updateDoc, increment } from 'firebase/firestore'
+import { doc, getDoc, setDoc, collection, addDoc, getDocs, orderBy, query, updateDoc, increment } from 'firebase/firestore'
 
 function Discussion({ user }) {
   const { id } = useParams()
   const [post, setPost] = useState(null)
   const [replies, setReplies] = useState([])
   const [reply, setReply] = useState('')
+  const [liked, setLiked] = useState(false)
   const navigate = useNavigate()
 
   useEffect(() => {
@@ -47,9 +48,27 @@ function Discussion({ user }) {
     })
     setReply('')
     fetchReplies()
+    fetchPost()
   }
 
   const handleLike = async () => {
+    if (!auth.currentUser) {
+      navigate('/login')
+      return
+    }
+    if (liked) {
+      alert('You already liked this post! 😊')
+      return
+    }
+    const likeRef = doc(db, 'posts', id, 'likedBy', auth.currentUser.uid)
+    const likeSnap = await getDoc(likeRef)
+    if (likeSnap.exists()) {
+      alert('You already liked this post! 😊')
+      setLiked(true)
+      return
+    }
+    setLiked(true)
+    await setDoc(likeRef, { liked: true })
     await updateDoc(doc(db, 'posts', id), {
       likes: increment(1)
     })
@@ -97,8 +116,14 @@ function Discussion({ user }) {
             <div className="post-content">
               <h4>{post.author}</h4>
               <p>{post.title}</p>
+              {post.body && <p style={{color:'#666', marginTop:'8px'}}>{post.body}</p>}
               <div className="post-actions">
-                <button onClick={handleLike}>👍 Like ({post.likes})</button>
+                <button
+                  onClick={handleLike}
+                  disabled={liked}
+                  style={{opacity: liked ? 0.5 : 1, cursor: liked ? 'not-allowed' : 'pointer'}}>
+                  👍 Like ({post.likes})
+                </button>
               </div>
             </div>
           </div>

@@ -16,6 +16,7 @@ function Forum({ user }) {
   const [search, setSearch] = useState('')
   const [filter, setFilter] = useState('Popular')
   const [dark, setDark] = useState(false)
+  const [likedPosts, setLikedPosts] = useState([])
   const navigate = useNavigate()
 
   useEffect(() => {
@@ -76,6 +77,11 @@ function Forum({ user }) {
       navigate('/login')
       return
     }
+    if (likedPosts.includes(postId)) {
+      alert('You already liked this post! 😊')
+      return
+    }
+    setLikedPosts([...likedPosts, postId])
     const likeRef = doc(db, 'posts', postId, 'likedBy', auth.currentUser.uid)
     const likeSnap = await getDoc(likeRef)
     if (likeSnap.exists()) {
@@ -131,14 +137,12 @@ function Forum({ user }) {
 
       <div className="forum-layout">
 
-        {/* LEFT SIDEBAR */}
         <div className="left-sidebar">
           <Link to="/" className="sidebar-link">🏠 Home</Link>
           <Link to="/forum" className="sidebar-link active-link">🔍 Explore</Link>
           {user && <Link to="/profile" className="sidebar-link">👤 Profile</Link>}
         </div>
 
-        {/* MAIN CONTENT */}
         <div className="main-content">
 
           <div className="forum-top">
@@ -151,7 +155,6 @@ function Forum({ user }) {
             </button>
           </div>
 
-          {/* FILTER TABS */}
           <div className="filter-tabs">
             {['Popular', 'Newest', 'Unanswered'].map(tab => (
               <button
@@ -187,7 +190,6 @@ function Forum({ user }) {
             </div>
           )}
 
-          {/* POSTS LIST */}
           {filtered.length === 0 && (
             <p style={{textAlign:'center', padding:'40px', color:'#888'}}>
               No posts found! 🔍
@@ -197,7 +199,13 @@ function Forum({ user }) {
           {filtered.map(post => (
             <div className="post-card" key={post.id}>
               <div className="vote-section">
-                <button className="vote-btn" onClick={() => handleLike(post.id)}>▲</button>
+                <button
+                  className="vote-btn"
+                  onClick={() => handleLike(post.id)}
+                  disabled={likedPosts.includes(post.id)}
+                  style={{opacity: likedPosts.includes(post.id) ? 0.5 : 1, cursor: likedPosts.includes(post.id) ? 'not-allowed' : 'pointer'}}>
+                  ▲
+                </button>
                 <span className="vote-count">{post.likes}</span>
                 <button className="vote-btn down">▼</button>
               </div>
@@ -221,9 +229,7 @@ function Forum({ user }) {
           ))}
         </div>
 
-        {/* RIGHT SIDEBAR */}
         <div className="right-sidebar">
-
           <div className="sidebar-card">
             <h4>📈 Trending Tags</h4>
             {allTags.length === 0 && <p style={{color:'#888', fontSize:'13px'}}>No tags yet!</p>}
@@ -247,7 +253,6 @@ function Forum({ user }) {
               </div>
             ))}
           </div>
-
         </div>
       </div>
 
