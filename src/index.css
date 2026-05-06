@@ -1167,3 +1167,118 @@ footer {
   color: white;
   border-color: #444;
 }
+.dark-mode .forums h2 {
+  color: white;
+}
+
+.dark-mode .popular-section h2 {
+  color: white;
+}
+
+.dark-mode .forum-card {
+  background: #1a1a1a;
+}
+
+.dark-mode .forum-card h3 {
+  color: white;
+}
+
+.dark-mode .forum-card p {
+  color: #aaa;
+}
+
+.dark-mode .stats-container {
+  background: #0d0d0d;
+}
+
+.dark-mode .discussion-item {
+  background: #1a1a1a;
+}
+
+.dark-mode .discussion-info h3 {
+  color: white;
+}
+
+.dark-mode .forum-top h2 {
+  color: white;
+}
+
+.dark-mode .forum-top p {
+  color: #aaa;
+}
+
+.dark-mode .post-card {
+  background: #1a1a1a;
+}
+
+.dark-mode .post-title-link h3 {
+  color: white;
+}
+
+.dark-mode .sidebar-card {
+  background: #1a1a1a;
+}
+
+.dark-mode .sidebar-card h4 {
+  color: white;
+}
+
+.dark-mode .sidebar-link {
+  color: #aaa;
+}
+
+.dark-mode .filter-tab {
+  background: #1a1a1a;
+  color: #aaa;
+  border-color: #333;
+}
+
+.dark-mode .main-post {
+  background: #1a1a1a;
+}
+
+.dark-mode .post-content h4 {
+  color: white;
+}
+
+.dark-mode .post-content p {
+  color: #aaa;
+}
+
+.dark-mode .reply-box {
+  background: #1a1a1a;
+}
+
+.dark-mode .reply-box h3 {
+  color: white;
+}
+
+.dark-mode .replies-title {
+  color: white;
+}
+
+.dark-mode .form-box {
+  background: #1a1a1a;
+}
+
+.dark-mode .form-box h2 {
+  color: white;
+}
+
+.dark-mode .form-group label {
+  color: #aaa;
+}
+
+.dark-mode .form-group input {
+  background: #333;
+  color: white;
+  border-color: #444;
+}
+
+.dark-mode .profile-header {
+  background: #111;
+}
+
+.dark-mode .my-posts-title {
+  color: white;
+}

@@ -5,11 +5,10 @@ import { auth, db } from './firebase'
 import { signOut } from 'firebase/auth'
 import { collection, getDocs, orderBy, query, limit } from 'firebase/firestore'
 
-function Home({ user }) {
+function Home({ user, dark, setDark }) {
   const navigate = useNavigate()
   const [stats, setStats] = useState({ posts: 0, users: 0 })
   const [popular, setPopular] = useState([])
-  const [dark, setDark] = useState(false)
 
   useEffect(() => {
     fetchStats()
@@ -37,8 +36,7 @@ function Home({ user }) {
   }
 
   return (
-    <div className={dark ? 'dark-mode' : ''}>
-
+    <div>
       <nav>
         <h1>Think Hub</h1>
         <ul>
@@ -66,7 +64,7 @@ function Home({ user }) {
       <div className="hero">
         <h2>Welcome to Think Hub 💡</h2>
         <p>A place to share knowledge, ask questions and discuss ideas!</p>
-        <Link to="/register"><button>Get Started</button></Link>
+        <Link to="/forum"><button>Get Started</button></Link>
       </div>
 
       {/* STATS SECTION */}

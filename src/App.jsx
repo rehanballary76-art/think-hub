@@ -12,6 +12,7 @@ import Profile from './Profile'
 
 function App() {
   const [user, setUser] = useState(null)
+  const [dark, setDark] = useState(false)
 
   useEffect(() => {
     onAuthStateChanged(auth, (currentUser) => {
@@ -20,16 +21,18 @@ function App() {
   }, [])
 
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Home user={user} />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/forum" element={<Forum user={user} />} />
-        <Route path="/discussion/:id" element={<Discussion user={user} />} />
-        <Route path="/profile" element={<Profile user={user} />} />
-      </Routes>
-    </BrowserRouter>
+    <div className={dark ? 'dark-mode' : ''}>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<Home user={user} dark={dark} setDark={setDark} />} />
+          <Route path="/login" element={<Login dark={dark} setDark={setDark} />} />
+          <Route path="/register" element={<Register dark={dark} setDark={setDark} />} />
+          <Route path="/forum" element={<Forum user={user} dark={dark} setDark={setDark} />} />
+          <Route path="/discussion/:id" element={<Discussion user={user} dark={dark} setDark={setDark} />} />
+          <Route path="/profile" element={<Profile user={user} dark={dark} setDark={setDark} />} />
+        </Routes>
+      </BrowserRouter>
+    </div>
   )
 }
 

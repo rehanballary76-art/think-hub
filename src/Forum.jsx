@@ -5,7 +5,7 @@ import { db, auth } from './firebase'
 import { signOut } from 'firebase/auth'
 import { collection, addDoc, getDocs, orderBy, query, updateDoc, doc, increment, getDoc, setDoc } from 'firebase/firestore'
 
-function Forum({ user }) {
+function Forum({ user, dark, setDark }) {
   const [posts, setPosts] = useState([])
   const [filtered, setFiltered] = useState([])
   const [title, setTitle] = useState('')
@@ -15,7 +15,6 @@ function Forum({ user }) {
   const [showForm, setShowForm] = useState(false)
   const [search, setSearch] = useState('')
   const [filter, setFilter] = useState('Popular')
-  const [dark, setDark] = useState(false)
   const [likedPosts, setLikedPosts] = useState([])
   const navigate = useNavigate()
 
@@ -103,7 +102,7 @@ function Forum({ user }) {
   const allTags = [...new Set(posts.flatMap(p => p.tags ? p.tags.split(',').map(t => t.trim()) : []))]
 
   return (
-    <div className={dark ? 'dark-mode' : ''}>
+    <div>
       <nav>
         <h1>Think Hub</h1>
         <div className="nav-search">

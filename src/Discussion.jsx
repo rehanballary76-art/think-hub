@@ -5,7 +5,7 @@ import { db, auth } from './firebase'
 import { signOut } from 'firebase/auth'
 import { doc, getDoc, setDoc, collection, addDoc, getDocs, orderBy, query, updateDoc, increment } from 'firebase/firestore'
 
-function Discussion({ user }) {
+function Discussion({ user, dark, setDark }) {
   const { id } = useParams()
   const [post, setPost] = useState(null)
   const [replies, setReplies] = useState([])
@@ -98,6 +98,11 @@ function Discussion({ user }) {
               <li><Link to="/register">Register</Link></li>
             </>
           )}
+          <li>
+            <button className="dark-toggle" onClick={() => setDark(!dark)}>
+              {dark ? '☀️' : '🌙'}
+            </button>
+          </li>
         </ul>
       </nav>
 
@@ -109,7 +114,6 @@ function Discussion({ user }) {
       )}
 
       <div className="discussion-main">
-
         {post && (
           <div className="main-post">
             <div className="post-avatar">Q</div>
@@ -154,7 +158,6 @@ function Discussion({ user }) {
             Post Reply
           </button>
         </div>
-
       </div>
 
       <footer>
